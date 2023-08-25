@@ -1,10 +1,13 @@
+import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_book/firebase_options.dart';
-import 'package:flutter_book/helper/helper_function.dart';
-import 'package:flutter_book/pages/auth/login_page.dart';
-import 'package:flutter_book/pages/home_page.dart';
-import 'package:flutter_book/shared/constants.dart';
+import 'package:flutter_book/screens/splash_screen.dart';
+import 'package:flutter_notification_channel/flutter_notification_channel.dart';
+import 'package:flutter_notification_channel/notification_importance.dart';
+
+late Size mq;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,45 +15,48 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  //enter full-screen
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
+  //for setting orientation to portrait only
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
+      .then((value) {
+    _initializeFirebase();
+    runApp(const MyApp());
+  });
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-
-  bool _isSignedIn = false;
-
-  @override
-  void initState() {
-    super.initState();
-    getUserLoggedInStatus();
-  }
-
-  getUserLoggedInStatus() async {
-    await HelperFunctions.getUserLoggedInStatus().then((value) {
-      if(value != null) {
-        setState(() {
-          _isSignedIn = value;
-        });
-      }
-    });
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primaryColor: Constants().primaryColor,
-        scaffoldBackgroundColor: Colors.white,),
-      debugShowCheckedModeBanner: false,
-      home: _isSignedIn ? const HomePage() : const LoginPage(),
-    );
+        title: 'Chat App',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            appBarTheme: const AppBarTheme(
+          centerTitle: true,
+          elevation: 1,
+          iconTheme: IconThemeData(color: Colors.black),
+          titleTextStyle: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.normal, fontSize: 19),
+          backgroundColor: Colors.white,
+        )),
+        home: const SplashScreen());
   }
 }
+
+_initializeFirebase() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  var result = await FlutterNotificationChannel.registerNotificationChannel(
+      description: 'For Showing Message Notification',
+      id: 'chats',
+      importance: NotificationImportance.IMPORTANCE_HIGH,
+      name: 'Chats');
+  log('\nNotification Channel Result: $result');
+}
+
 
