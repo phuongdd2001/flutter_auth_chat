@@ -1,19 +1,29 @@
 import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_book/ForGroundLocalNotification.dart';
 import 'package:flutter_book/firebase_options.dart';
 import 'package:flutter_book/screens/splash_screen.dart';
 import 'package:flutter_notification_channel/flutter_notification_channel.dart';
 import 'package:flutter_notification_channel/notification_importance.dart';
 
 late Size mq;
+// notifications message
+
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message)async {
+//   await Firebase.initializeApp();
+// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  //  notifications message
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   //enter full-screen
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -32,6 +42,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // notifications message
+    LocalNotification.initialize();
+    // For Forground State
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      LocalNotification.showNotification(message);
+    });
+    // end
     return MaterialApp(
         title: 'Chat App',
         debugShowCheckedModeBanner: false,

@@ -48,6 +48,8 @@ dependencies:
   firebase_messaging: ^14.6.7
   http: ^1.1.0
   flutter_notification_channel: ^2.0.0
+  # notifications message
+  flutter_local_notifications: ^15.1.1
 #  image_gallery_saver: ^2.0.3
 #  dio: ^5.3.2
 
