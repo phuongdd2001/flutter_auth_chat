@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_book/firebase_options.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../api/apis.dart';
@@ -61,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await InternetAddress.lookup('google.com');
       // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(clientId: DefaultFirebaseOptions.currentPlatform.iosClientId).signIn();
 
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth =
@@ -76,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Once signed in, return the UserCredential
       return await APIs.auth.signInWithCredential(credential);
     } catch (e) {
+      print("da vao");
       log('\n_signInWithGoogle: $e');
       Dialogs.showSnackbar(context, 'Something Went Wrong (Check Internet!)');
       return null;
