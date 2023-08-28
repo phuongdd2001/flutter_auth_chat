@@ -77,18 +77,11 @@ class _LoginScreenState extends State<LoginScreen> {
       // Once signed in, return the UserCredential
       return await APIs.auth.signInWithCredential(credential);
     } catch (e) {
-      print("da vao");
       log('\n_signInWithGoogle: $e');
       Dialogs.showSnackbar(context, 'Something Went Wrong (Check Internet!)');
       return null;
     }
   }
-
-  //sign out function
-  // _signOut() async {
-  //   await FirebaseAuth.instance.signOut();
-  //   await GoogleSignIn().signOut();
-  // }
 
   @override
   Widget build(BuildContext context) {
