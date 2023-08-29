@@ -51,13 +51,20 @@ class APIs {
     });
 
     // for handling foreground messages
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   log('Got a message whilst in the foreground!');
-    //   log('Message data: ${message.data}');
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      log('Got a message whilst in the foreground!');
+      log('Message data: ${message.data}');
 
-    //   if (message.notification != null) {
-    //     log('Message also contained a notification: ${message.notification}');
-    //   }
+      if (message.notification != null) {
+        log('Message also contained a notification: ${message.notification}');
+      }
+    });
+
+    // Mặc định bắn thông báo notification dạng thông báo nổi mọi trường hợp
+    // LocalNotification.initialize();
+    // For Forground State
+    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    //   LocalNotification.showNotification(message);
     // });
   }
 
@@ -284,6 +291,13 @@ class APIs {
         .collection('chats/${getConversationID(chatUser.id)}/messages/');
     await ref.doc(time).set(message.toJson()).then((value) =>
         sendPushNotification(chatUser, type == Type.text ? msg : 'image'));
+
+      // Bắn thông báo notification không ở trong app
+      // LocalNotification.initialize();
+      // // For Forground State
+      // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      //   LocalNotification.showNotification(message);
+      // });
   }
 
   //update read status of message
